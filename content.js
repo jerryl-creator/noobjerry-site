@@ -131,7 +131,8 @@ window.SITE = {
         ["Cooler", "Thermalright Peerless Assassin PA120 SE"],
         ["Storage", "Samsung 970 EVO Plus 250GB · Crucial 1TB SSD · Samsung 870 QVO 2TB"],
         ["Case", "Corsair 4000D Airflow"],
-        ["Monitor", "34\" Ultrawide"]
+        ["Monitor", "Samsung Odyssey G50A 27\" (2K / 165Hz)"],
+        ["2nd Monitor", "ASUS TUF Gaming VG249Q"]
       ]
     },
     {
@@ -139,6 +140,7 @@ window.SITE = {
       items: [
         ["Wheel", "Thrustmaster T300 RS GT Edition"],
         ["Pedals", "Thrustmaster T3PA (GT Edition set)"],
+        ["Monitor", "Acer 34\" Ultrawide"],
         ["Sims", "iRacing · Automobilista 2 · ACC"]
       ]
     }
