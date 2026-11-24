@@ -24,7 +24,7 @@ window.SITE = {
   name: "NoobJerry",
   tagline: "Wuthering Waves, sim racing and whatever I'm playing.",
   bio: "Boss fights and story cutscenes from Wuthering Waves (JP + ENG subs), sim racing in iRacing, Automobilista 2 and ACC, and other games I'm into. Pick a video below or come say hi on YouTube.",
-  avatar: "https://yt3.googleusercontent.com/nI5LwnWADrE7ZR-VyArylCjnd8S2tF0Rtx_BWosVoqU_P0ncsWWFZqzgPqFUrL8XE9UN2uR8Kw=s240-c-k-c0x00ffffff-no-rj",
+  avatar: "images/avatar.jpg",
 
   socials: [
     { platform: "youtube", label: "YouTube", handle: "@noobjerry", url: "https://youtube.com/@noobjerry" },
@@ -108,6 +108,34 @@ window.SITE = {
       date: "2024-10-20",
       tags: ["sim racing"],
       youtubeId: "l1R4nQLcI2U"
+    }
+  ],
+
+  /*
+    MY SETUP section. Each group is a card; each item is ["Label", "What you use"].
+    Add, remove or rename freely. Delete the whole `setup` block to hide the section.
+  */
+  setup: [
+    {
+      name: "PC", jp: "パソコン",
+      items: [
+        ["CPU", "AMD Ryzen 7 5700X3D"],
+        ["GPU", "ASUS TUF Gaming RTX 3070 V2"],
+        ["RAM", "Kingston FURY Beast RGB 32GB (2×16GB, 3600MHz)"],
+        ["Motherboard", "ROG B450-F Gaming"],
+        ["Cooler", "Thermalright Peerless Assassin PA120 SE"],
+        ["Storage", "Samsung 970 EVO Plus 250GB · Crucial 1TB SSD · Samsung 870 QVO 2TB"],
+        ["Case", "Corsair 4000D Airflow"],
+        ["Monitor", "34\" Ultrawide"]
+      ]
+    },
+    {
+      name: "Sim Racing", jp: "シムレーシング",
+      items: [
+        ["Wheel", "Thrustmaster T300 RS GT Edition"],
+        ["Pedals", "Thrustmaster T3PA (GT Edition set)"],
+        ["Sims", "iRacing · Automobilista 2 · ACC"]
+      ]
     }
   ],
 

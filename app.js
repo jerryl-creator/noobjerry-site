@@ -178,6 +178,16 @@
        <span class="ig-date">${fmtDate(p.date)}</span>
      </button>`).join("") : `<p class="empty">No Instagram posts added yet.</p>`;
 
+  // ---- My setup ----
+  const setup = S.setup || [];
+  if (setup.length) {
+    $("setup").hidden = false;
+    $("setup-grid").innerHTML = setup.map((g) =>
+      `<div class="setup-card"><h3>${esc(g.name)}<span class="jp">${esc(g.jp || "")}</span></h3>
+        <dl>${(g.items || []).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></div>`
+    ).join("");
+  }
+
   // ---- scroll-in reveal ----
   const root0 = document.documentElement;
   const io = "IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -191,7 +201,7 @@
     : null;
   const reveal = (scope) => {
     if (!io) return;
-    scope.querySelectorAll(".card, .ig-tile, .link-item, .featured").forEach((el, i) => {
+    scope.querySelectorAll(".card, .ig-tile, .link-item, .featured, .setup-card").forEach((el, i) => {
       if (el.classList.contains("reveal") || el.dataset.shown) return;
       el.classList.add("reveal");
       el.style.transitionDelay = (i % 4) * 60 + "ms";
