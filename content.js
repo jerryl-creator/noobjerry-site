@@ -147,7 +147,7 @@ window.SITE = {
     Your stats are then at https://noobjerry.goatcounter.com
     Leave it "" to turn stats off. Visits from your own computer (localhost) aren't counted.
   */
-  goatcounter: "",
+  goatcounter: "noobjl",
 
   footer: "" // optional line at the bottom of the page, e.g. a business email
 };
