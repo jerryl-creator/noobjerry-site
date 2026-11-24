@@ -140,5 +140,14 @@ window.SITE = {
     }
   ],
 
+  /*
+    VISITOR STATS (GoatCounter - free, no cookies, no cookie banner needed).
+    1. Sign up at https://www.goatcounter.com/signup and pick a code, e.g. "noobjerry".
+    2. Put that code below:  goatcounter: "noobjerry"
+    Your stats are then at https://noobjerry.goatcounter.com
+    Leave it "" to turn stats off. Visits from your own computer (localhost) aren't counted.
+  */
+  goatcounter: "",
+
   footer: "" // optional line at the bottom of the page, e.g. a business email
 };

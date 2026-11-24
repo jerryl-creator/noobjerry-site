@@ -54,10 +54,18 @@
     return isNaN(t) ? esc(d) : t.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   };
   const thumb = (v) => {
+    if (v.short && v.youtubeId && !v.thumbnail) {
+      // Shorts get YouTube's vertical thumbnail (falls back to the normal one if missing).
+      const id = encodeURIComponent(v.youtubeId);
+      return `<div class="thumb thumb-short"><img src="https://i.ytimg.com/vi/${id}/oar2.jpg" alt="" loading="lazy"
+        onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'"><span class="play">${PLAY}</span></div>`;
+    }
     const img = v.thumbnail || (v.youtubeId ? `https://i.ytimg.com/vi/${encodeURIComponent(v.youtubeId)}/mqdefault.jpg` : "");
     return `<div class="thumb">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<span class="ph">no video yet</span>`}
       <span class="play">${PLAY}</span></div>`;
   };
+  // Shorts titles often end in "| sandwichjerry on #Twitch"; hide that tail on the cards.
+  const cleanTitle = (v) => v.short ? String(v.title).replace(/\s*\|\s*[^|]*\bon #?Twitch\s*$/i, "") : v.title;
 
   const feat = videos.find((v) => v.featured);
   if (feat) {
@@ -68,19 +76,37 @@
       <button class="btn" data-i="${videos.indexOf(feat)}">${PLAY.replace('<svg', '<svg width="14" height="14"')} Watch now</button></div>`;
   }
 
-  const tags = [...new Set(videos.flatMap((v) => v.tags || []))];
+  // Filters: "All" = normal videos, one chip per tag, and "Shorts" for vertical clips.
+  const longVideos = videos.filter((v) => !v.short);
+  const hasShorts = videos.some((v) => v.short);
+  const tags = [...new Set(longVideos.flatMap((v) => v.tags || []))];
   let active = "all";
+  let query = "";
   const filters = $("filters");
+  const search = $("video-search");
   const renderFilters = () => {
-    filters.innerHTML = ["all", ...tags].map((t) =>
-      `<button class="chip ${t === active ? "active" : ""}" data-tag="${esc(t)}" aria-pressed="${t === active}">${esc(nice(t))}</button>`).join("");
+    filters.innerHTML = ["all", ...tags, ...(hasShorts ? ["shorts"] : [])].map((t) =>
+      `<button class="chip ${t === active ? "active" : ""} ${t === "shorts" ? "chip-shorts" : ""}" data-tag="${esc(t)}" aria-pressed="${t === active}">${esc(nice(t))}</button>`).join("");
+  };
+  const matches = (v, words) => {
+    const hay = [v.title, v.description, ...(v.tags || []), v.short ? "short shorts" : ""].join(" ").toLowerCase();
+    return words.every((w) => hay.includes(w));
   };
   const renderGrid = () => {
-    const list = videos.map((v, i) => [v, i]).filter(([v]) => active === "all" || (v.tags || []).includes(active));
-    $("video-grid").innerHTML = list.length ? list.map(([v, i]) =>
-      `<button class="card" data-i="${i}">${thumb(v)}<div class="card-body"><h3>${esc(v.title)}</h3>
-        <div class="meta"><span>${fmtDate(v.date)}</span>${(v.tags || []).map((t) => `<span class="tag">${esc(nice(t))}</span>`).join("")}</div></div></button>`
-    ).join("") : `<p class="empty">No videos with this tag yet.</p>`;
+    const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const list = videos.map((v, i) => [v, i]).filter(([v]) => {
+      if (active === "shorts") return v.short && matches(v, words);
+      if (active !== "all") return !v.short && (v.tags || []).includes(active) && matches(v, words);
+      // "All": normal videos only, but a search looks through Shorts too.
+      return (words.length || !v.short) && matches(v, words);
+    });
+    const grid = $("video-grid");
+    grid.classList.toggle("shorts-mode", active === "shorts");
+    grid.innerHTML = list.length ? list.map(([v, i]) =>
+      `<button class="card${v.short ? " card-short" : ""}" data-i="${i}">${thumb(v)}<div class="card-body"><h3>${esc(cleanTitle(v))}</h3>
+        <div class="meta"><span>${fmtDate(v.date)}</span>${v.short ? `<span class="tag">Short</span>` : (v.tags || []).map((t) => `<span class="tag">${esc(nice(t))}</span>`).join("")}</div></div></button>`
+    ).join("") : `<p class="empty">${words.length ? `No videos match “${esc(query.trim())}”.` : "No videos with this tag yet."}</p>`;
+    $("video-count").textContent = words.length ? `${list.length} result${list.length === 1 ? "" : "s"}` : "";
   };
   filters.addEventListener("click", (e) => {
     const b = e.target.closest("[data-tag]");
@@ -88,6 +114,16 @@
     active = b.dataset.tag;
     renderFilters(); renderGrid();
   });
+  search.addEventListener("input", () => { query = search.value; renderGrid(); });
+  // Press "/" anywhere to jump to the search box (like YouTube); Esc clears it.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName) && !$("player").open) {
+      e.preventDefault();
+      if (typeof selectTab === "function") selectTab("youtube");
+      search.focus();
+    }
+  });
+  search.addEventListener("keydown", (e) => { if (e.key === "Escape") { search.value = ""; query = ""; renderGrid(); search.blur(); } });
   renderFilters(); renderGrid();
 
   // ---- tabs: YouTube / Instagram, with a sliding pill ----
@@ -186,6 +222,30 @@
       `<div class="setup-card"><h3>${esc(g.name)}<span class="jp">${esc(g.jp || "")}</span></h3>
         <dl>${(g.items || []).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></div>`
     ).join("");
+  }
+
+  // ---- visitor stats (GoatCounter, only if a code is set in content.js) ----
+  const gcCode = String(S.goatcounter || "").trim().toLowerCase();
+  const track = (path, title) => {
+    try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title, event: true }); } catch (e) {}
+  };
+  if (/^[a-z0-9-]+$/.test(gcCode)) {
+    const gc = document.createElement("script");
+    gc.async = true;
+    gc.src = "https://gc.zgo.at/count.js";
+    gc.dataset.goatcounter = `https://${gcCode}.goatcounter.com/count`;
+    document.body.appendChild(gc);
+    // Count which things people click: videos, Instagram posts, social links, tabs.
+    document.addEventListener("click", (e) => {
+      const v = e.target.closest("[data-i]");
+      if (v && !v.closest("dialog")) { const x = videos[+v.dataset.i]; if (x) track(`video/${x.youtubeId || x.url}`, x.title); }
+      const g = e.target.closest("[data-ig]");
+      if (g) { const p = posts[+g.dataset.ig]; if (p) track(`instagram/${p.code}`, "Instagram " + p.type); }
+      const l = e.target.closest(".social-btn, .link-item");
+      if (l) track(`link/${l.hostname}`, "Link: " + (l.getAttribute("aria-label") || l.querySelector("strong")?.textContent || l.hostname));
+      const t = e.target.closest("[data-tab]");
+      if (t) track(`tab/${t.dataset.tab}`, "Tab: " + t.dataset.tab);
+    }, true);
   }
 
   // ---- scroll-in reveal ----

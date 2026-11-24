@@ -29,6 +29,8 @@ DEFAULT_TAG = "gaming"
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "videos.js"
 FEED = f"https://www.youtube.com/feeds/videos.xml?channel_id={CHANNEL_ID}"
+# YouTube keeps a Shorts-only list for every channel: "UUSH" + the channel ID without "UC".
+SHORTS_FEED = f"https://www.youtube.com/feeds/videos.xml?playlist_id=UUSH{CHANNEL_ID[2:]}"
 NS = {"a": "http://www.w3.org/2005/Atom",
       "yt": "http://www.youtube.com/xml/schemas/2015",
       "media": "http://search.yahoo.com/mrss/"}
@@ -58,8 +60,8 @@ def load_existing():
     return json.loads(body[start:end + 1]) if start != -1 else []
 
 
-def fetch_feed():
-    req = urllib.request.Request(FEED, headers={"User-Agent": "site-video-updater"})
+def fetch_feed(url, short=False):
+    req = urllib.request.Request(url, headers={"User-Agent": "site-video-updater"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         root = ET.fromstring(resp.read())
     videos = []
@@ -70,13 +72,16 @@ def fetch_feed():
         desc = e.findtext("media:group/media:description", namespaces=NS)
         if vid:
             videos.append({"title": title, "date": published, "tags": tags_for(title),
-                           "youtubeId": vid, "description": short_description(desc)})
+                           "youtubeId": vid, "description": short_description(desc), "short": short})
     return videos
 
 
 def main():
     try:
-        fresh = fetch_feed()
+        shorts = fetch_feed(SHORTS_FEED, short=True)
+        short_ids = {v["youtubeId"] for v in shorts}
+        uploads = [v for v in fetch_feed(FEED) if v["youtubeId"] not in short_ids]
+        fresh = uploads + shorts
     except Exception as err:  # network hiccup: keep the old file, don't fail the site build
         print(f"Could not read the YouTube feed: {err}", file=sys.stderr)
         return
@@ -89,7 +94,7 @@ def main():
                    encoding="utf-8")
     print(f"{len(added)} new video(s), {len(videos)} total.")
     for v in added:
-        print(f"  + {v['date']}  {v['title']}")
+        print(f"  + {v['date']}  {'[Short] ' if v.get('short') else ''}{v['title']}")
 
 
 if __name__ == "__main__":

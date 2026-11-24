@@ -9,7 +9,8 @@ window.AUTO_VIDEOS = [
       "gaming"
     ],
     "youtubeId": "Adu4sXOWZLo",
-    "description": "Childhood game man, still I suck at this."
+    "description": "Childhood game man, still I suck at this.",
+    "short": false
   },
   {
     "title": "Project Reclaimer (Halo 3 / PC) - 30 vs 30 Gameplay",
@@ -18,7 +19,8 @@ window.AUTO_VIDEOS = [
       "gaming"
     ],
     "youtubeId": "AWczD3yCkwA",
-    "description": "Sorry, it's been a while I didn't play Halo since I was 14 years old."
+    "description": "Sorry, it's been a while I didn't play Halo since I was 14 years old.",
+    "short": false
   },
   {
     "title": "Hsin, Rover & Suoming VS Suhsin the Inevitable Boss (With Cutscenes) - Wuthering Waves 3.7 (JP+ENG)",
@@ -27,7 +29,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "WTkqq1zkYE0",
-    "description": "*Played on PC and Ultrawide, Watch in Theater Mode*"
+    "description": "*Played on PC and Ultrawide, Watch in Theater Mode*",
+    "short": false
   },
   {
     "title": "Dating with Lorelei - Wuthering Waves (PC / Ultrawide)",
@@ -36,7 +39,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "dyNGeu6O0O0",
-    "description": "*Played on PC, Watch in Theater Mode*"
+    "description": "*Played on PC, Watch in Theater Mode*",
+    "short": false
   },
   {
     "title": "I.R.I.S Guitar Song - Wuthering Waves",
@@ -45,7 +49,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "T6ycbRwjQH0",
-    "description": "This song can make me sleep man."
+    "description": "This song can make me sleep man.",
+    "short": false
   },
   {
     "title": "Qingxiao & Rover vs Calamity Effigy (Muyu) with Cutscenes - Wuthering Waves 3.6 (JP + ENG Subs)",
@@ -54,7 +59,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "2LyzYpLE-vA",
-    "description": "*Played on PC, Watch in Theater mode*"
+    "description": "*Played on PC, Watch in Theater mode*",
+    "short": false
   },
   {
     "title": "Aemeath having conversation with our Father & My message to Kuro Games Team - Wuthering Waves 3.5",
@@ -63,7 +69,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "8gm36CGQO6I",
-    "description": "*Watch till the end, I have message to Kuro Games*"
+    "description": "*Watch till the end, I have message to Kuro Games*",
+    "short": false
   },
   {
     "title": "Yangyang & Rover vs Thousand-Puppet Pavilion (Muyu) - Wuthering Waves 3.5 (JP + ENG Subs)",
@@ -72,7 +79,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "v3VW9oBErTc",
-    "description": "*SPOILERS*"
+    "description": "*SPOILERS*",
+    "short": false
   },
   {
     "title": "Yangyang confess to our Rover - Wuthering Waves 3.5 (JP + ENG Subs)",
@@ -81,7 +89,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "N8WzGD0vCEI",
-    "description": "*Played on PC*"
+    "description": "*Played on PC*",
+    "short": false
   },
   {
     "title": "Lucy, Rebecca and Rover vs Adam Smasher (with Cutscenes) - Wuthering Waves x Cyberpunk Edgerunners",
@@ -90,7 +99,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "blTmuGoGDxg",
-    "description": "*SPOILERS ENDING*"
+    "description": "*SPOILERS ENDING*",
+    "short": false
   },
   {
     "title": "iRacing - Praticing on Nurburgring (911 GT3 R / Ringmeister Setup)",
@@ -99,7 +109,8 @@ window.AUTO_VIDEOS = [
       "sim racing"
     ],
     "youtubeId": "qF8ZMePh0E8",
-    "description": "When I review back again, there might a lot of mistakes here."
+    "description": "When I review back again, there might a lot of mistakes here.",
+    "short": false
   },
   {
     "title": "Denia Boss Fight & Ending (with Cutscenes) - Wuthering Waves 3.3 (JP + ENG SUBS)",
@@ -108,7 +119,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "iXT9S1ax98c",
-    "description": "*SPOILERS*"
+    "description": "*SPOILERS*",
+    "short": false
   },
   {
     "title": "Rover and Aemeath vs Aleph-1 (with Cutscenes) - Wuthering Waves 3.3 (JP+ENG SUBS)",
@@ -117,7 +129,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "vsRtAJiZKMs",
-    "description": "*SPOILERS*"
+    "description": "*SPOILERS*",
+    "short": false
   },
   {
     "title": "Aemeath sacrifices herself to protect Rover & Lahai-Roi - Wuthering Waves 3.1 (JP+ENG SUBS)",
@@ -126,7 +139,8 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "T7VtOiLZWK8",
-    "description": "I'm so sad that we can't save our daughter. :("
+    "description": "I'm so sad that we can't save our daughter. :(",
+    "short": false
   },
   {
     "title": "Rover & Lyane fight the Voidworm - Wuthering Waves 3.0 (JP + ENG SUBS)",
@@ -135,6 +149,157 @@ window.AUTO_VIDEOS = [
       "wuthering waves"
     ],
     "youtubeId": "5Y964O8YYwg",
-    "description": "*SPOILERS*"
+    "description": "*SPOILERS*",
+    "short": false
+  },
+  {
+    "title": "I'm going inside line. | #sandwichjerry on #Twitch",
+    "date": "2024-11-06",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "CngAGYsokKM",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "After hugely dropped safe rating, temp back to Ferrari. | #sandwichjerry on #Twitch",
+    "date": "2024-10-24",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "EZsNViheQJ8",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "Too late to realise. | #sandwichjerry on #Twitch",
+    "date": "2024-10-12",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "48d7XRvKIaI",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "Lucky I evaded | #sandwichjerry on #Twitch",
+    "date": "2024-09-27",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "x7bEb-RzBb4",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "later karma | sandwichjerry on #Twitch",
+    "date": "2024-08-18",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "PFF4Ratgtkk",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "That divebomb is clean | sandwichjerry on #Twitch",
+    "date": "2024-08-14",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "09xJRangK74",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "You must avoid crash in Turn 1, especially lap 1 | sandwichjerry on #Twitch",
+    "date": "2024-08-11",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "j2TozmrFV68",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "The trick did not work on him, but it did get distracted | sandwichjerry on #Twitch",
+    "date": "2024-08-04",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "xz3HlBPWSSs",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "that works, I watched your overtake video @dannyleeracing | sandwichjerry on #Twitch",
+    "date": "2024-08-02",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "QhPPXEgkiDM",
+    "description": "Thank you for the tips, Danny! after I watched your shorts #shorts",
+    "short": true
+  },
+  {
+    "title": "Always pay attention on the road. | sandwichjerry on #Twitch",
+    "date": "2024-07-31",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "4tsQwCt0Rqc",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "Last lap, gotta commit! | sandwichjerry on #Twitch",
+    "date": "2024-04-12",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "kd0aR1tKmLw",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "Don't give up, let's go! - iRacing",
+    "date": "2024-04-08",
+    "tags": [
+      "sim racing"
+    ],
+    "youtubeId": "290vKzuGFvk",
+    "description": "Gonna pressure em at the end, you get chance. Don't give up!",
+    "short": true
+  },
+  {
+    "title": "Sandstorm cleared, nightmare comes in.",
+    "date": "2024-04-06",
+    "tags": [
+      "gaming"
+    ],
+    "youtubeId": "FAyXU8evXfE",
+    "description": "When sandstorm cleared, like I seen ghost. #madebyeklipse",
+    "short": true
+  },
+  {
+    "title": "I won in iRacing! Global MX-5 Cup!  | sandwichjerry on #Twitch",
+    "date": "2024-04-03",
+    "tags": [
+      "sim racing"
+    ],
+    "youtubeId": "jDjr5n1dwTQ",
+    "description": "",
+    "short": true
+  },
+  {
+    "title": "Let's GO! POLE! My first time in iRacing | sandwichjerry on #Twitch",
+    "date": "2024-04-03",
+    "tags": [
+      "sim racing"
+    ],
+    "youtubeId": "tU_oarZasDU",
+    "description": "",
+    "short": true
   }
 ];
