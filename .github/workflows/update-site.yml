@@ -19,11 +19,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  update-and-publish:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      publish: ${{ steps.save.outputs.changed == 'true' || github.event_name != 'schedule' }}
     steps:
       - uses: actions/checkout@v7
 
@@ -61,6 +60,13 @@ jobs:
         with:
           path: _site
 
+  deploy:
+    needs: build
+    if: needs.build.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - id: deploy
         uses: actions/deploy-pages@v5
-        if: steps.save.outputs.changed == 'true' || github.event_name != 'schedule'
