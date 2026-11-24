@@ -95,29 +95,55 @@
     const hay = [v.title, v.description, ...(v.tags || []), v.short ? "short shorts" : ""].join(" ").toLowerCase();
     return words.every((w) => hay.includes(w));
   };
+  // Show 12 videos at a time (Shorts: 16); "Load more" adds the next batch.
+  // A search always shows every match.
+  const PAGE = 12, PAGE_SHORTS = 16;
+  const pageSize = () => (active === "shorts" ? PAGE_SHORTS : PAGE);
+  let shown = PAGE;
+  let currentList = [];
+  const cardHTML = ([v, i]) =>
+    `<button class="card${v.short ? " card-short" : ""}" data-i="${i}">${thumb(v)}<div class="card-body"><h3>${esc(cleanTitle(v))}</h3>
+      <div class="meta"><span>${fmtDate(v.date)}</span>${v.short ? `<span class="tag">Short</span>` : (v.tags || []).map((t) => `<span class="tag">${esc(nice(t))}</span>`).join("")}</div></div></button>`;
+  const moreBtn = $("load-more");
+  const paintMore = (words) => {
+    const left = words.length ? 0 : currentList.length - shown;
+    moreBtn.hidden = left <= 0;
+    if (left > 0) moreBtn.innerHTML = `Load more <span>(${left} left)</span>`;
+  };
   const renderGrid = () => {
     const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-    const list = videos.map((v, i) => [v, i]).filter(([v]) => {
+    currentList = videos.map((v, i) => [v, i]).filter(([v]) => {
       if (active === "shorts") return v.short && matches(v, words);
       if (active !== "all") return !v.short && (v.tags || []).includes(active) && matches(v, words);
       // "All": normal videos only, but a search looks through Shorts too.
       return (words.length || !v.short) && matches(v, words);
     });
+    const visible = words.length ? currentList : currentList.slice(0, shown);
     const grid = $("video-grid");
     grid.classList.toggle("shorts-mode", active === "shorts");
-    grid.innerHTML = list.length ? list.map(([v, i]) =>
-      `<button class="card${v.short ? " card-short" : ""}" data-i="${i}">${thumb(v)}<div class="card-body"><h3>${esc(cleanTitle(v))}</h3>
-        <div class="meta"><span>${fmtDate(v.date)}</span>${v.short ? `<span class="tag">Short</span>` : (v.tags || []).map((t) => `<span class="tag">${esc(nice(t))}</span>`).join("")}</div></div></button>`
-    ).join("") : `<p class="empty">${words.length ? `No videos match “${esc(query.trim())}”.` : "No videos with this tag yet."}</p>`;
-    $("video-count").textContent = words.length ? `${list.length} result${list.length === 1 ? "" : "s"}` : "";
+    grid.innerHTML = visible.length ? visible.map(cardHTML).join("")
+      : `<p class="empty">${words.length ? `No videos match “${esc(query.trim())}”.` : "No videos with this tag yet."}</p>`;
+    $("video-count").textContent = words.length ? `${currentList.length} result${currentList.length === 1 ? "" : "s"}` : "";
+    paintMore(words);
   };
+  moreBtn.addEventListener("click", () => {
+    const from = shown;
+    shown += pageSize();
+    const grid = $("video-grid");
+    grid.insertAdjacentHTML("beforeend", currentList.slice(from, shown).map(cardHTML).join(""));
+    const firstNew = grid.querySelectorAll(".card")[from];
+    if (typeof reveal === "function") reveal(grid); // new cards slide in
+    if (firstNew) firstNew.focus({ preventScroll: true });
+    paintMore([]);
+  });
   filters.addEventListener("click", (e) => {
     const b = e.target.closest("[data-tag]");
     if (!b) return;
     active = b.dataset.tag;
+    shown = pageSize();
     renderFilters(); renderGrid();
   });
-  search.addEventListener("input", () => { query = search.value; renderGrid(); });
+  search.addEventListener("input", () => { query = search.value; shown = pageSize(); renderGrid(); });
   // Press "/" anywhere to jump to the search box (like YouTube); Esc clears it.
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && !/input|textarea/i.test(document.activeElement.tagName) && !$("player").open) {
