@@ -51,6 +51,10 @@ jobs:
           mkdir _site
           cp index.html style.css app.js content.js videos.js _site/
           [ -d images ] && cp -r images _site/ || true
+          # Stamp file links with this version so browsers load fresh copies after every publish.
+          v="${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
+          sed -i -E "s/(href|src)=\"(style\.css|app\.js|content\.js|videos\.js)\"/\1=\"\2?v=$v\"/g" _site/index.html
+          grep -E "\?v=" _site/index.html
 
       - uses: actions/configure-pages@v6
         if: steps.save.outputs.changed == 'true' || github.event_name != 'schedule'
