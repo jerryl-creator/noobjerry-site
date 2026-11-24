@@ -11,7 +11,8 @@
       https://www.youtube.com/watch?v=AbC123xYz  ->  "AbC123xYz"
     For a Shorts link (youtube.com/shorts/AbC123xYz) it's the last part.
   - Or use `url` instead of youtubeId to link anywhere (TikTok, Twitch...).
-  - Set featured: true on ONE video to show it big at the top.
+  - The big video at the top shows your newest upload automatically.
+    To pin one instead, set `featured` (below) to its YouTube ID.
   - New YouTube uploads appear on their own (see README), so you only
     need to add a video here to feature it, re-tag it, or show an old one.
   - Dates are YYYY-MM-DD. The older ones below are approximate.
@@ -61,6 +62,10 @@ window.SITE = {
     ]
   },
 
+  // Big video at the top: "latest" = your newest upload (not Shorts), updates by itself.
+  // To pin a specific video, put its YouTube ID instead, e.g. featured: "Ic_kVwK7dEs"
+  featured: "latest",
+
   // New uploads are added automatically to videos.js (see README).
   // Set to false to only show the videos listed below.
   autoVideos: true,
@@ -89,8 +94,7 @@ window.SITE = {
       date: "2025-09-20",
       tags: ["wuthering waves"],
       youtubeId: "Ic_kVwK7dEs",
-      description: "Lupa takes on the Lady of the Sea, with JP voices and English subtitles. The most-watched video on the channel.",
-      featured: true
+      description: "Lupa takes on the Lady of the Sea, with JP voices and English subtitles. The most-watched video on the channel."
     },
     {
       title: "BMW M4 GT3 Hotlap on Thruxton Circuit | iRacing",

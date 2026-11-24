@@ -67,12 +67,15 @@
   // Shorts titles often end in "| sandwichjerry on #Twitch"; hide that tail on the cards.
   const cleanTitle = (v) => v.short ? String(v.title).replace(/\s*\|\s*[^|]*\bon #?Twitch\s*$/i, "") : v.title;
 
-  const feat = videos.find((v) => v.featured);
+  // Featured: a pinned YouTube ID from content.js, or (default) the newest normal upload.
+  const featSetting = String(S.featured || "latest").trim();
+  const pinned = featSetting !== "latest" ? videos.find((v) => v.youtubeId === featSetting) : null;
+  const feat = pinned || videos.find((v) => v.featured) || videos.find((v) => !v.short);
   if (feat) {
     const f = $("featured");
     f.hidden = false;
     f.innerHTML = `<div role="button" tabindex="0" data-i="${videos.indexOf(feat)}" class="feat-thumb">${thumb(feat)}</div>
-      <div><span class="label">★ featured</span><h3>${esc(feat.title)}</h3><p>${esc(feat.description)}</p>
+      <div><span class="label">${feat === pinned || feat.featured ? "★ featured" : "★ latest upload"}</span><h3>${esc(feat.title)}</h3>${feat.description ? `<p>${esc(feat.description)}</p>` : `<p>${fmtDate(feat.date)}${(feat.tags || []).length ? " · " + (feat.tags || []).map(nice).map(esc).join(" · ") : ""}</p>`}
       <button class="btn" data-i="${videos.indexOf(feat)}">${PLAY.replace('<svg', '<svg width="14" height="14"')} Watch now</button></div>`;
   }
 
