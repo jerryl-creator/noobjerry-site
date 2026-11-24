@@ -28,7 +28,8 @@ window.SITE = {
 
   socials: [
     { platform: "youtube", label: "YouTube", handle: "@noobjerry", url: "https://youtube.com/@noobjerry" },
-    { platform: "instagram", label: "Instagram", handle: "@noob_jerryl", url: "https://www.instagram.com/noob_jerryl" }
+    { platform: "instagram", label: "Instagram", handle: "@noob_jerryl", url: "https://www.instagram.com/noob_jerryl" },
+    { platform: "twitch", label: "Twitch", handle: "sandwichjerry", url: "https://www.twitch.tv/sandwichjerry" }
   ],
 
   /*
