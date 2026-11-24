@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Channel</title>
+  <meta name="description" content="Videos and links">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Apply the saved theme before the page draws, so it doesn't flash.
+    try {
+      var t = localStorage.getItem("theme");
+      if (t) document.documentElement.dataset.theme = t;
+    } catch (e) {}
+    // Play the pop-in intro (skipped for people who turned off animations).
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("intro");
+  </script>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a href="#top" class="logo" id="logo"></a>
+    <nav>
+      <button class="theme-toggle" id="theme-toggle" type="button"></button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="speedlines" aria-hidden="true"></div>
+      <div class="avatar" id="avatar"></div>
+      <p class="kicker">// welcome to my page, just look around</p>
+      <h1 id="name"></h1>
+      <p class="tagline" id="tagline"></p>
+      <p class="bio" id="bio"></p>
+      <div class="social-row" id="social-row"></div>
+    </section>
+
+    <section class="featured" id="featured" hidden></section>
+
+    <section id="content" class="section">
+      <div class="section-head">
+        <h2><span class="hash">#</span>content<span class="jp">コンテンツ</span></h2>
+        <div class="tabs" role="tablist" aria-label="Choose content" id="tabs">
+          <span class="tab-pill" id="tab-pill" aria-hidden="true"></span>
+          <button class="tab" role="tab" id="tab-youtube" data-tab="youtube" aria-controls="panel-youtube" aria-selected="true"></button>
+          <button class="tab" role="tab" id="tab-instagram" data-tab="instagram" aria-controls="panel-instagram" aria-selected="false" tabindex="-1"></button>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-youtube" role="tabpanel" aria-labelledby="tab-youtube">
+        <div class="filters" id="filters" role="group" aria-label="Filter videos by tag"></div>
+        <div class="video-grid" id="video-grid"></div>
+      </div>
+
+      <div class="panel" id="panel-instagram" role="tabpanel" aria-labelledby="tab-instagram" hidden>
+        <div class="ig-head" id="ig-head"></div>
+        <div class="ig-grid" id="ig-grid"></div>
+      </div>
+    </section>
+
+    <section id="links" class="section">
+      <div class="section-head">
+        <h2><span class="hash">#</span>find_me<span class="jp">リンク</span></h2>
+      </div>
+      <div class="link-list" id="link-list"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p id="footer-text"></p>
+    <p class="muted">© <span id="year"></span> <span id="footer-name"></span></p>
+  </footer>
+
+  <dialog id="player" class="player">
+    <button class="close" id="player-close" aria-label="Close video">✕</button>
+    <div class="player-frame" id="player-frame"></div>
+    <div class="player-foot"><h3 id="player-title"></h3><a id="player-link" class="player-link" target="_blank" rel="noopener" hidden></a></div>
+  </dialog>
+
+  <script src="content.js"></script>
+  <script src="videos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+// Builds the page from content.js. You normally don't need to edit this file.
+(function () {
+  const S = window.SITE || {};
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  const ICONS = {
+    youtube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>',
+    tiktok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.5 2.5 2.5 4.5 5 4.5"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l16 16M20 4L4 20"/></svg>',
+    twitch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 3h16v11l-4 4h-4l-3 3v-3H4z"/><path d="M11 8v4M15 8v4"/></svg>',
+    discord: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 6c2-1.5 4.5-2 7-2s5 .5 7 2c1.5 3 2 6 2 10-1.5 1.5-3.5 2.5-5 3l-1-2.5c-1 .3-2 .5-3 .5s-2-.2-3-.5L8 19c-1.5-.5-3.5-1.5-5-3 0-4 .5-7 2-10z"/><circle cx="9" cy="12" r="1.3" fill="currentColor"/><circle cx="15" cy="12" r="1.3" fill="currentColor"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>'
+  };
+  const PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>';
+  const icon = (p) => ICONS[p] || ICONS.link;
+  const nice = (t) => String(t).replace(/\b\w/g, (c) => c.toUpperCase()); // "sim racing" -> "Sim Racing"
+
+  // ---- header / hero ----
+  document.title = S.name || "My Channel";
+  $("logo").textContent = S.name || "";
+  $("name").textContent = S.name || "";
+  $("tagline").textContent = S.tagline || "";
+  $("bio").textContent = S.bio || "";
+  $("footer-text").textContent = S.footer || "";
+  if (!S.footer) $("footer-text").hidden = true;
+  $("footer-name").textContent = S.name || "";
+  $("year").textContent = new Date().getFullYear();
+
+  const avatar = $("avatar");
+  if (S.avatar) avatar.innerHTML = `<img src="${esc(S.avatar)}" alt="" referrerpolicy="no-referrer">`;
+  else avatar.textContent = (S.name || "?").replace(/[^a-z0-9]/gi, "").charAt(0).toUpperCase();
+
+  const socials = S.socials || [];
+  $("social-row").innerHTML = socials.map((s) =>
+    `<a class="social-btn" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="${esc(s.label)}" title="${esc(s.label)}">${icon(s.platform)}</a>`
+  ).join("");
+  $("link-list").innerHTML = socials.map((s) =>
+    `<a class="link-item" href="${esc(s.url)}" target="_blank" rel="noopener">${icon(s.platform)}
+       <div><strong>${esc(s.label)}</strong><span>${esc(s.handle)}</span></div><span class="arrow">↗</span></a>`
+  ).join("");
+
+  // ---- videos ----
+  // Hand-picked videos (content.js) + automatic uploads (videos.js); hand-picked wins.
+  const hidden = new Set(S.hideVideos || []);
+  const manual = S.videos || [];
+  const manualIds = new Set(manual.map((v) => v.youtubeId).filter(Boolean));
+  const auto = S.autoVideos === false ? [] : (window.AUTO_VIDEOS || []).filter((v) => !manualIds.has(v.youtubeId));
+  const videos = manual.concat(auto).filter((v) => !hidden.has(v.youtubeId)).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const fmtDate = (d) => {
+    const t = new Date(d + "T00:00:00");
+    return isNaN(t) ? esc(d) : t.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  };
+  const thumb = (v) => {
+    const img = v.thumbnail || (v.youtubeId ? `https://i.ytimg.com/vi/${encodeURIComponent(v.youtubeId)}/mqdefault.jpg` : "");
+    return `<div class="thumb">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<span class="ph">no video yet</span>`}
+      <span class="play">${PLAY}</span></div>`;
+  };
+
+  const feat = videos.find((v) => v.featured);
+  if (feat) {
+    const f = $("featured");
+    f.hidden = false;
+    f.innerHTML = `<div role="button" tabindex="0" data-i="${videos.indexOf(feat)}" class="feat-thumb">${thumb(feat)}</div>
+      <div><span class="label">★ featured</span><h3>${esc(feat.title)}</h3><p>${esc(feat.description)}</p>
+      <button class="btn" data-i="${videos.indexOf(feat)}">${PLAY.replace('<svg', '<svg width="14" height="14"')} Watch now</button></div>`;
+  }
+
+  const tags = [...new Set(videos.flatMap((v) => v.tags || []))];
+  let active = "all";
+  const filters = $("filters");
+  const renderFilters = () => {
+    filters.innerHTML = ["all", ...tags].map((t) =>
+      `<button class="chip ${t === active ? "active" : ""}" data-tag="${esc(t)}" aria-pressed="${t === active}">${esc(nice(t))}</button>`).join("");
+  };
+  const renderGrid = () => {
+    const list = videos.map((v, i) => [v, i]).filter(([v]) => active === "all" || (v.tags || []).includes(active));
+    $("video-grid").innerHTML = list.length ? list.map(([v, i]) =>
+      `<button class="card" data-i="${i}">${thumb(v)}<div class="card-body"><h3>${esc(v.title)}</h3>
+        <div class="meta"><span>${fmtDate(v.date)}</span>${(v.tags || []).map((t) => `<span class="tag">${esc(nice(t))}</span>`).join("")}</div></div></button>`
+    ).join("") : `<p class="empty">No videos with this tag yet.</p>`;
+  };
+  filters.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tag]");
+    if (!b) return;
+    active = b.dataset.tag;
+    renderFilters(); renderGrid();
+  });
+  renderFilters(); renderGrid();
+
+  // ---- tabs: YouTube / Instagram, with a sliding pill ----
+  const tabsEl = $("tabs"), pill = $("tab-pill");
+  const TABS = ["youtube", "instagram"];
+  // Anime-style label: big title letters (each its own span so they can bounce) + small katakana under it.
+  const animeLabel = (en, jp) =>
+    `<span class="al"><span class="al-en">${[...en].map((c, i) => `<span class="ch" style="--i:${i}">${esc(c)}</span>`).join("")}</span><span class="al-jp">${esc(jp)}</span></span>`;
+  const replay = (el, cls) => {
+    el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+    clearTimeout(el["_t" + cls]); el["_t" + cls] = setTimeout(() => el.classList.remove(cls), 1000);
+  };
+  $("tab-youtube").innerHTML = ICONS.youtube + animeLabel("YouTube", "ユーチューブ");
+  $("tab-instagram").innerHTML = ICONS.instagram + animeLabel("Instagram", "インスタグラム");
+  let currentTab = "youtube";
+  const movePill = () => {
+    const btn = $("tab-" + currentTab);
+    pill.style.width = btn.offsetWidth + "px";
+    pill.style.transform = `translateX(${btn.offsetLeft - 4}px)`;
+  };
+  // Pop the tab's items in one after another (the first ~12; the rest appear together).
+  const popPanel = (panel) => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    panel.querySelectorAll(".chip, .card, .ig-head, .ig-tile").forEach((el, i) => {
+      el.classList.remove("reveal", "in"); el.style.transitionDelay = ""; el.dataset.shown = "1";
+      el.style.setProperty("--k", Math.min(i, 12));
+    });
+    panel.classList.remove("popping"); void panel.offsetWidth; panel.classList.add("popping");
+    clearTimeout(panel._pop); panel._pop = setTimeout(() => panel.classList.remove("popping"), 1600);
+  };
+  const selectTab = (name, focus) => {
+    if (!TABS.includes(name) || name === currentTab) return;
+    currentTab = name;
+    TABS.forEach((t) => {
+      const on = t === name, btn = $("tab-" + t), panel = $("panel-" + t);
+      btn.setAttribute("aria-selected", on);
+      btn.tabIndex = on ? 0 : -1;
+      panel.hidden = !on;
+      if (on) popPanel(panel);
+    });
+    if (focus) $("tab-" + name).focus();
+    replay($("tab-" + name), "pop");
+    replay(pill, "shine");
+    movePill();
+  };
+  tabsEl.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-tab]");
+    if (b) selectTab(b.dataset.tab);
+  });
+  tabsEl.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const i = TABS.indexOf(currentTab) + (e.key === "ArrowRight" ? 1 : -1);
+    selectTab(TABS[(i + TABS.length) % TABS.length], true);
+  });
+  // Nav links (#youtube / #instagram) pick the tab and scroll to it.
+  const fromHash = () => {
+    const h = location.hash.slice(1);
+    if (TABS.includes(h)) {
+      selectTab(h);
+      $("content").scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  window.addEventListener("hashchange", fromHash);
+  window.addEventListener("resize", movePill);
+  if (document.fonts) document.fonts.ready.then(movePill);
+  // The Japanese letters of the font load a bit later and make the tabs wider;
+  // re-measure whenever a tab changes size so the pill always fits.
+  if ("ResizeObserver" in window) {
+    const ro = new ResizeObserver(() => movePill());
+    tabsEl.querySelectorAll(".tab").forEach((b) => ro.observe(b));
+  }
+  movePill();
+  requestAnimationFrame(() => tabsEl.classList.add("ready")); // no slide on first paint
+  fromHash();
+
+  // ---- Instagram grid ----
+  const IG = S.instagram || {};
+  const posts = (IG.posts || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const igUrl = (p) => `https://www.instagram.com/${p.type === "reel" ? "reel" : "p"}/${encodeURIComponent(p.code)}/`;
+  $("ig-head").innerHTML = `${ICONS.instagram}<div><strong>${esc(IG.handle || "")}</strong>
+      <span>Latest photos and reels</span></div>
+      ${IG.url ? `<a class="btn" href="${esc(IG.url)}" target="_blank" rel="noopener">Follow ↗</a>` : ""}`;
+  const REEL = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"/></svg>';
+  $("ig-grid").innerHTML = posts.length ? posts.map((p, i) =>
+    `<button class="ig-tile" data-ig="${i}" aria-label="${esc((p.type === "reel" ? "Reel" : "Photo") + " from " + fmtDate(p.date))}">
+       <img src="${esc(p.image)}" alt="" loading="lazy">
+       ${p.type === "reel" ? `<span class="ig-badge">${REEL}</span>` : ""}
+       <span class="ig-date">${fmtDate(p.date)}</span>
+     </button>`).join("") : `<p class="empty">No Instagram posts added yet.</p>`;
+
+  // ---- scroll-in reveal ----
+  const root0 = document.documentElement;
+  const io = "IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? new IntersectionObserver((entries) => entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        const el = en.target;
+        el.classList.add("in"); io.unobserve(el);
+        // once it has arrived, hand control back to the normal hover effects
+        setTimeout(() => { el.classList.remove("reveal", "in"); el.style.transitionDelay = ""; el.dataset.shown = "1"; }, 900);
+      }), { rootMargin: "0px 0px -40px 0px" })
+    : null;
+  const reveal = (scope) => {
+    if (!io) return;
+    scope.querySelectorAll(".card, .ig-tile, .link-item, .featured").forEach((el, i) => {
+      if (el.classList.contains("reveal") || el.dataset.shown) return;
+      el.classList.add("reveal");
+      el.style.transitionDelay = (i % 4) * 60 + "ms";
+      io.observe(el);
+    });
+  };
+  // Wait for the page intro to finish before cards start revealing on scroll.
+  const hasIntro = root0.classList.contains("intro");
+  setTimeout(() => reveal(document), hasIntro ? 1500 : 0);
+  if (hasIntro) setTimeout(() => root0.classList.remove("intro"), 2600);
+  filters.addEventListener("click", () => reveal($("video-grid")));
+  // Tiles in a hidden tab can't be seen yet; reveal them when the tab opens.
+
+  // ---- theme switch (dark monochrome / light) ----
+  const root = document.documentElement;
+  const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+  const toggle = $("theme-toggle");
+  const current = () => root.dataset.theme || "dark";
+  const paintToggle = () => {
+    const light = current() === "light";
+    toggle.innerHTML = light ? MOON + animeLabel("Dark", "ダーク") : SUN + animeLabel("Light", "ライト");
+    toggle.setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
+  };
+  const applyTheme = (next) => {
+    root.dataset.theme = next;
+    try { localStorage.setItem("theme", next); } catch (e) {}
+    paintToggle();
+    replay(toggle, "spin"); replay(toggle, "pop");
+  };
+  toggle.addEventListener("click", () => {
+    const next = current() === "light" ? "dark" : "light";
+    toggle.classList.remove("spin", "pop");
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || calm) {
+      // Older browsers: colors fade smoothly via CSS instead.
+      root.classList.add("theme-fade");
+      applyTheme(next);
+      setTimeout(() => root.classList.remove("theme-fade"), 600);
+      return;
+    }
+    // Circle that grows out of the button and reveals the new theme.
+    const r = toggle.getBoundingClientRect();
+    const x = r.left + r.width / 2, y = r.top + r.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    document.startViewTransition(() => applyTheme(next)).ready.then(() => {
+      root.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: "cubic-bezier(.65, 0, .35, 1)", pseudoElement: "::view-transition-new(root)" }
+      );
+    });
+  });
+  paintToggle();
+
+  // ---- player ----
+  const dlg = $("player");
+  const open = (v) => {
+    if (v.url && !v.youtubeId) { window.open(v.url, "_blank", "noopener"); return; }
+    dlg.classList.remove("ig-mode");
+    $("player-link").hidden = true;
+    $("player-title").textContent = v.title;
+    $("player-frame").innerHTML = v.youtubeId
+      ? `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.youtubeId)}?autoplay=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="${esc(v.title)}"></iframe>`
+      : `<p class="ph-msg">No video linked yet.<br>Add a <code>youtubeId</code> for this video in <code>content.js</code>.</p>`;
+    dlg.showModal();
+  };
+  const openIg = (p) => {
+    dlg.classList.add("ig-mode");
+    $("player-title").textContent = p.caption || (p.type === "reel" ? "Reel" : "Photo") + " · " + fmtDate(p.date);
+    const link = $("player-link");
+    link.href = igUrl(p); link.textContent = "Open on Instagram ↗"; link.hidden = false;
+    $("player-frame").innerHTML = `<iframe src="${igUrl(p)}embed/" title="Instagram post" allowfullscreen scrolling="no"></iframe>`;
+    dlg.showModal();
+  };
+  const close = () => { dlg.close(); };
+  dlg.addEventListener("close", () => { $("player-frame").innerHTML = ""; });
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) close(); });
+  $("player-close").addEventListener("click", close);
+
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest("[data-i]");
+    if (el && !el.closest("dialog")) open(videos[+el.dataset.i]);
+    const ig = e.target.closest("[data-ig]");
+    if (ig) openIg(posts[+ig.dataset.ig]);
+  });
+  document.addEventListener("keydown", (e) => {
+    const el = e.target.closest && e.target.closest('[role="button"][data-i]');
+    if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(videos[+el.dataset.i]); }
+  });
+})();
