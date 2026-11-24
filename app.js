@@ -35,10 +35,10 @@
 
   const socials = S.socials || [];
   $("social-row").innerHTML = socials.map((s) =>
-    `<a class="social-btn" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="${esc(s.label)}" title="${esc(s.label)}">${icon(s.platform)}</a>`
+    `<a class="social-btn" data-platform="${esc(s.platform)}" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="${esc(s.label)}" title="${esc(s.label)}">${icon(s.platform)}</a>`
   ).join("");
   $("link-list").innerHTML = socials.map((s) =>
-    `<a class="link-item" href="${esc(s.url)}" target="_blank" rel="noopener">${icon(s.platform)}
+    `<a class="link-item" data-platform="${esc(s.platform)}" href="${esc(s.url)}" target="_blank" rel="noopener">${icon(s.platform)}
        <div><strong>${esc(s.label)}</strong><span>${esc(s.handle)}</span></div><span class="arrow">↗</span></a>`
   ).join("");
 
@@ -225,6 +225,47 @@
       `<div class="setup-card"><h3>${esc(g.name)}<span class="jp">${esc(g.jp || "")}</span></h3>
         <dl>${(g.items || []).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl></div>`
     ).join("");
+  }
+
+  // ---- Twitch LIVE badge ----
+  // Asks decapi.me (a free public Twitch helper) whether the channel is streaming.
+  const twitchUser = String(S.twitchLive || "").trim();
+  if (/^[a-z0-9_]{3,25}$/i.test(twitchUser)) {
+    const badge = $("live-badge");
+    badge.href = `https://www.twitch.tv/${twitchUser}`;
+    let wasLive = false;
+    const shortUptime = (t) => t.split(",").slice(0, 2).join(",").trim(); // "2 hours, 3 minutes"
+    const setLive = (live, game, uptime) => {
+      badge.hidden = !live;
+      $("live-meta").textContent = live && game ? " · " + game : "";
+      $("live-time").textContent = live && uptime ? " · " + shortUptime(uptime) : "";
+      badge.title = live ? `Watch ${twitchUser} live on Twitch` : "";
+      document.querySelectorAll('[data-platform="twitch"]').forEach((el) => {
+        el.classList.toggle("is-live", live);
+        if (el.classList.contains("link-item")) {
+          const h = el.querySelector("div span");
+          if (h) h.textContent = live ? "● LIVE now" : twitchUser;
+        }
+      });
+      if (live && !wasLive) replay(badge, "pop");
+      wasLive = live;
+    };
+    const ask = async (what) => (await (await fetch(`https://decapi.me/twitch/${what}/${twitchUser}`, { cache: "no-store" })).text()).trim();
+    const checkLive = async () => {
+      try {
+        const uptime = await ask("uptime");
+        const live = /\b\d+\s+(second|minute|hour|day)s?\b/i.test(uptime) && !/offline/i.test(uptime);
+        let game = "";
+        if (live) {
+          try { game = await ask("game"); } catch (e) {}
+          if (game.length > 60 || /error|not found|no game/i.test(game)) game = "";
+        }
+        setLive(live, game, live ? uptime : "");
+      } catch (e) { /* service unreachable: keep current state */ }
+    };
+    checkLive();
+    setInterval(() => { if (!document.hidden) checkLive(); }, 120000); // every 2 minutes
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) checkLive(); });
   }
 
   // ---- visitor stats (GoatCounter, only if a code is set in content.js) ----

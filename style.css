@@ -112,6 +112,30 @@ h1 {
 .tagline { font-size: clamp(18px, 3vw, 22px); margin: 0 0 14px; }
 .bio { max-width: 560px; margin: 0 auto 28px; color: var(--muted); }
 
+@keyframes pop-up { 0% { opacity: 0; transform: translateY(14px) scale(.85); } 60% { opacity: 1; transform: translateY(-3px) scale(1.04); } 100% { opacity: 1; transform: none; } }
+/* Twitch LIVE badge (the red dot is the one bit of color: it's the universal "live" signal) */
+.live-badge {
+  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 6px 14px 6px 12px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--text);
+  font: 13px var(--mono); box-shadow: 3px 3px 0 var(--ink); transition: transform .2s, border-color .2s;
+}
+.live-badge[hidden] { display: none; }
+.live-badge:hover { transform: translate(-1px, -2px); border-color: var(--accent); }
+.live-badge strong { font: 400 14px "Dela Gothic One", var(--sans); letter-spacing: .06em; }
+.live-badge { max-width: 100%; white-space: nowrap; }
+.live-meta, .live-time { color: var(--muted); }
+.live-meta { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+@media (max-width: 560px) { .live-time { display: none; } }
+.live-dot, .social-btn.is-live::after {
+  width: 9px; height: 9px; border-radius: 50%; background: #ff3b3b; flex: none;
+  animation: live-pulse 1.6s ease-out infinite;
+}
+@keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 59, .55); } 100% { box-shadow: 0 0 0 10px rgba(255, 59, 59, 0); } }
+.live-badge.pop { animation: pop-up .7s cubic-bezier(.34, 1.4, .64, 1); }
+.social-btn.is-live { position: relative; border-color: var(--accent-2); }
+.social-btn.is-live::after { content: ""; position: absolute; top: -3px; right: -3px; border: 2px solid var(--bg); }
+.link-item.is-live div span { color: #ff5a5a; }
+
 .social-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
 .social-btn {
   width: 46px; height: 46px; display: grid; place-items: center;

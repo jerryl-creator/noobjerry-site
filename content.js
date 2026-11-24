@@ -144,6 +144,10 @@ window.SITE = {
     }
   ],
 
+  // Twitch LIVE badge: your Twitch username. While you're streaming, a red LIVE badge
+  // appears under your name and on your Twitch buttons. Leave "" to turn it off.
+  twitchLive: "sandwichjerry",
+
   /*
     VISITOR STATS (GoatCounter - free, no cookies, no cookie banner needed).
     1. Sign up at https://www.goatcounter.com/signup and pick a code, e.g. "noobjerry".
