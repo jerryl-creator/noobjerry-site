@@ -17,7 +17,7 @@
     need to add a video here to feature it, re-tag it, or show an old one.
   - Dates are YYYY-MM-DD. The older ones below are approximate.
   - To add another social link, copy the YouTube block in `socials`.
-    Supported icons: youtube, tiktok, instagram, x, twitch, discord
+    Supported icons: youtube, tiktok, instagram, x, twitch, discord, github
     (anything else gets a generic link icon).
 */
 
@@ -30,7 +30,8 @@ window.SITE = {
   socials: [
     { platform: "youtube", label: "YouTube", handle: "@noobjerry", url: "https://youtube.com/@noobjerry" },
     { platform: "instagram", label: "Instagram", handle: "@noob_jerryl", url: "https://www.instagram.com/noob_jerryl" },
-    { platform: "twitch", label: "Twitch", handle: "sandwichjerry", url: "https://www.twitch.tv/sandwichjerry" }
+    { platform: "twitch", label: "Twitch", handle: "sandwichjerry", url: "https://www.twitch.tv/sandwichjerry" },
+    { platform: "github", label: "GitHub", handle: "jerryl-creator", url: "https://github.com/jerryl-creator" }
   ],
 
   /*
