@@ -29,17 +29,22 @@ jobs:
       - name: Get latest videos from YouTube
         run: python3 scripts/update_videos.py
 
-      - name: Save new videos to the repo
+      - name: Get latest projects and changelog from GitHub
+        run: python3 scripts/update_github.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save updates to the repo
         id: save
         run: |
-          if git diff --quiet -- videos.js; then
-            echo "No new videos."
+          if git diff --quiet -- videos.js github.js; then
+            echo "Nothing new from YouTube or GitHub."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add videos.js
-            git commit -m "Add new YouTube videos"
+            git add videos.js github.js
+            git commit -m "Update videos and GitHub activity"
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
@@ -49,11 +54,11 @@ jobs:
         if: steps.save.outputs.changed == 'true' || github.event_name != 'schedule'
         run: |
           mkdir _site
-          cp index.html style.css app.js content.js videos.js _site/
+          cp index.html style.css app.js content.js videos.js github.js _site/
           [ -d images ] && cp -r images _site/ || true
           # Stamp file links with this version so browsers load fresh copies after every publish.
           v="${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
-          sed -i -E "s/(href|src)=\"(style\.css|app\.js|content\.js|videos\.js)\"/\1=\"\2?v=$v\"/g" _site/index.html
+          sed -i -E "s/(href|src)=\"(style\.css|app\.js|content\.js|videos\.js|github\.js)\"/\1=\"\2?v=$v\"/g" _site/index.html
           grep -E "\?v=" _site/index.html
           # Site map for Google, dated to this publish.
           printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://jerryl-creator.github.io/noobjerry-site/</loc>\n    <lastmod>%s</lastmod>\n  </url>\n</urlset>\n' "$(date -u +%Y-%m-%d)" > _site/sitemap.xml

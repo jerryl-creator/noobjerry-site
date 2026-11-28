@@ -95,6 +95,7 @@
           <span class="tab-pill" id="tab-pill" aria-hidden="true"></span>
           <button class="tab" role="tab" id="tab-youtube" data-tab="youtube" aria-controls="panel-youtube" aria-selected="true"></button>
           <button class="tab" role="tab" id="tab-instagram" data-tab="instagram" aria-controls="panel-instagram" aria-selected="false" tabindex="-1"></button>
+          <button class="tab" role="tab" id="tab-github" data-tab="github" aria-controls="panel-github" aria-selected="false" tabindex="-1"></button>
         </div>
       </div>
 
@@ -115,6 +116,18 @@
       <div class="panel" id="panel-instagram" role="tabpanel" aria-labelledby="tab-instagram" hidden>
         <div class="ig-head" id="ig-head"></div>
         <div class="ig-grid" id="ig-grid"></div>
+      </div>
+
+      <div class="panel" id="panel-github" role="tabpanel" aria-labelledby="tab-github" hidden>
+        <div class="ig-head gh-head" id="gh-head"></div>
+        <h3 class="gh-sub">Projects<span class="jp">プロジェクト</span></h3>
+        <div class="gh-projects" id="gh-projects"></div>
+        <h3 class="gh-sub">Changelog<span class="jp">こうしんりれき</span></h3>
+        <ol class="gh-log" id="gh-log"></ol>
+        <div class="gh-log-foot">
+          <button class="btn load-more" id="gh-more" type="button" hidden></button>
+          <a class="gh-all" id="gh-all" target="_blank" rel="noopener">Full history on GitHub ↗</a>
+        </div>
       </div>
     </section>
 
@@ -146,6 +159,7 @@
 
   <script src="content.js"></script>
   <script src="videos.js"></script>
+  <script src="github.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

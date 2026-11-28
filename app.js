@@ -158,7 +158,10 @@
 
   // ---- tabs: YouTube / Instagram, with a sliding pill ----
   const tabsEl = $("tabs"), pill = $("tab-pill");
-  const TABS = ["youtube", "instagram"];
+  const GH = window.GITHUB_DATA || null;
+  const hasGitHub = !!(GH && (GH.projects || []).length);
+  const TABS = ["youtube", "instagram", ...(hasGitHub ? ["github"] : [])];
+  if (!hasGitHub) $("tab-github").remove();
   // Anime-style label: big title letters (each its own span so they can bounce) + small katakana under it.
   const animeLabel = (en, jp) =>
     `<span class="al"><span class="al-en">${[...en].map((c, i) => `<span class="ch" style="--i:${i}">${esc(c)}</span>`).join("")}</span><span class="al-jp">${esc(jp)}</span></span>`;
@@ -168,6 +171,7 @@
   };
   $("tab-youtube").innerHTML = ICONS.youtube + animeLabel("YouTube", "ユーチューブ");
   $("tab-instagram").innerHTML = ICONS.instagram + animeLabel("Instagram", "インスタグラム");
+  if (hasGitHub) $("tab-github").innerHTML = ICONS.github + animeLabel("GitHub", "ギットハブ");
   let currentTab = "youtube";
   const movePill = () => {
     const btn = $("tab-" + currentTab);
@@ -177,7 +181,7 @@
   // Pop the tab's items in one after another (the first ~12; the rest appear together).
   const popPanel = (panel) => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    panel.querySelectorAll(".chip, .card, .ig-head, .ig-tile").forEach((el, i) => {
+    panel.querySelectorAll(".chip, .card, .ig-head, .ig-tile, .gh-project, .gh-entry").forEach((el, i) => {
       el.classList.remove("reveal", "in"); el.style.transitionDelay = ""; el.dataset.shown = "1";
       el.style.setProperty("--k", Math.min(i, 12));
     });
@@ -243,6 +247,62 @@
        ${p.type === "reel" ? `<span class="ig-badge">${REEL}</span>` : ""}
        <span class="ig-date">${fmtDate(p.date)}</span>
      </button>`).join("") : `<p class="empty">No Instagram posts added yet.</p>`;
+
+  // ---- GitHub tab: projects + changelog (from github.js, refreshed on every site update) ----
+  if (hasGitHub) {
+    const REPO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H19v16H7.5A2.5 2.5 0 0 0 5 20.5z"/><path d="M5 20.5A2.5 2.5 0 0 0 7.5 23H19v-5"/></svg>';
+    const STAR = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>';
+    const thisSite = location.pathname.split("/").filter(Boolean)[0] || "";
+    $("gh-head").innerHTML = `${ICONS.github}<div><strong>@${esc(GH.user)}</strong>
+        <span>Projects I build and what changed lately</span></div>
+        <a class="btn" href="${esc(GH.url)}" target="_blank" rel="noopener" data-gh="profile">Follow ↗</a>`;
+    $("gh-projects").innerHTML = GH.projects.map((p) => `
+      <article class="gh-project">
+        <div class="gh-project-top">${REPO}<a href="${esc(p.url)}" target="_blank" rel="noopener" data-gh="${esc(p.name)}"><strong>${esc(p.name)}</strong></a>
+          ${p.name === thisSite ? `<span class="gh-badge">this website</span>` : ""}
+          ${p.release ? `<span class="gh-badge gh-badge-solid">${esc(p.release.tag)}</span>` : ""}</div>
+        ${p.description ? `<p>${esc(p.description)}</p>` : ""}
+        ${(p.topics || []).length ? `<div class="gh-topics">${p.topics.map((t) => `<span>${esc(t)}</span>`).join("")}</div>` : ""}
+        <div class="gh-project-foot">
+          <span class="meta">${p.language ? `<span class="gh-lang"></span>${esc(p.language)}` : ""}${p.stars ? `<span>${STAR}${p.stars}</span>` : ""}<span>Updated ${fmtDate(p.updated)}</span></span>
+          <span class="gh-actions">
+            ${p.release ? `<a class="btn btn-small btn-solid" href="${esc(p.release.url)}" target="_blank" rel="noopener" data-gh="${esc(p.name)}-download">Download ↓</a>` : ""}
+            <a class="btn btn-small" href="${esc(p.url)}" target="_blank" rel="noopener" data-gh="${esc(p.name)}">Code ↗</a>
+          </span>
+        </div>
+      </article>`).join("");
+
+    const LOG_PAGE = 10;
+    const log = GH.changelog || [];
+    let logShown = LOG_PAGE;
+    const multiRepo = new Set(log.map((e) => e.repo)).size > 1;
+    const entryHTML = (e) => `
+      <li class="gh-entry gh-${e.kind}">
+        <span class="gh-dot" aria-hidden="true"></span>
+        <div class="gh-entry-body">
+          <div class="gh-entry-top">${e.kind === "release" ? `<span class="gh-badge gh-badge-solid">★ ${esc(e.tag)}</span>` : ""}${multiRepo ? `<span class="gh-badge">${esc(e.repo)}</span>` : ""}<time datetime="${esc(e.date)}">${fmtDate(e.date.slice(0, 10))}</time></div>
+          <a href="${esc(e.url)}" target="_blank" rel="noopener" data-gh="${esc(e.repo)}-${e.kind}">${esc(e.title)}</a>
+          ${e.kind === "release" && e.text ? `<p>${esc(e.text)}</p>` : ""}
+          ${e.kind === "commit" ? `<code>${esc(e.sha)}</code>` : ""}
+        </div>
+      </li>`;
+    const logMore = $("gh-more");
+    const paintLog = () => {
+      const left = log.length - logShown;
+      logMore.hidden = left <= 0;
+      if (left > 0) logMore.innerHTML = `Show more <span>(${left} left)</span>`;
+    };
+    $("gh-log").innerHTML = log.slice(0, logShown).map(entryHTML).join("");
+    $("gh-all").href = GH.url;
+    paintLog();
+    logMore.addEventListener("click", () => {
+      const from = logShown;
+      logShown += LOG_PAGE;
+      $("gh-log").insertAdjacentHTML("beforeend", log.slice(from, logShown).map(entryHTML).join(""));
+      if (typeof reveal === "function") reveal($("gh-log"));
+      paintLog();
+    });
+  }
 
   // ---- My setup ----
   const setup = S.setup || [];
@@ -310,6 +370,8 @@
     document.addEventListener("click", (e) => {
       const v = e.target.closest("[data-i]");
       if (v && !v.closest("dialog")) { const x = videos[+v.dataset.i]; if (x) track(`video/${x.youtubeId || x.url}`, x.title); }
+      const gh = e.target.closest("[data-gh]");
+      if (gh) track(`github/${gh.dataset.gh}`, "GitHub: " + gh.dataset.gh);
       const g = e.target.closest("[data-ig]");
       if (g) { const p = posts[+g.dataset.ig]; if (p) track(`instagram/${p.code}`, "Instagram " + p.type); }
       const l = e.target.closest(".social-btn, .link-item");
@@ -332,7 +394,7 @@
     : null;
   const reveal = (scope) => {
     if (!io) return;
-    scope.querySelectorAll(".card, .ig-tile, .link-item, .featured, .setup-card").forEach((el, i) => {
+    scope.querySelectorAll(".card, .ig-tile, .link-item, .featured, .setup-card, .gh-project, .gh-entry").forEach((el, i) => {
       if (el.classList.contains("reveal") || el.dataset.shown) return;
       el.classList.add("reveal");
       el.style.transitionDelay = (i % 4) * 60 + "ms";
