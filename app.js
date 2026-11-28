@@ -19,6 +19,16 @@
   const icon = (p) => ICONS[p] || ICONS.link;
   const nice = (t) => String(t).replace(/\b\w/g, (c) => c.toUpperCase()); // "sim racing" -> "Sim Racing"
 
+  // If a Shorts thumbnail is missing, swap in the normal one (error events don't bubble, so listen in capture).
+  document.addEventListener("error", (e) => {
+    const img = e.target;
+    if (img && img.tagName === "IMG" && img.dataset.fallback) {
+      const next = img.dataset.fallback;
+      delete img.dataset.fallback;
+      img.src = next;
+    }
+  }, true);
+
   // ---- header / hero ----
   document.title = S.name || "My Channel";
   $("logo").textContent = S.name || "";
@@ -31,7 +41,7 @@
   $("year").textContent = new Date().getFullYear();
 
   const avatar = $("avatar");
-  if (S.avatar) avatar.innerHTML = `<img src="${esc(S.avatar)}" alt="" referrerpolicy="no-referrer">`;
+  if (S.avatar) avatar.innerHTML = `<img src="${esc(S.avatar)}" alt="" width="400" height="400" referrerpolicy="no-referrer">`;
   else avatar.textContent = (S.name || "?").replace(/[^a-z0-9]/gi, "").charAt(0).toUpperCase();
 
   const socials = S.socials || [];
@@ -58,11 +68,11 @@
     if (v.short && v.youtubeId && !v.thumbnail) {
       // Shorts get YouTube's vertical thumbnail (falls back to the normal one if missing).
       const id = encodeURIComponent(v.youtubeId);
-      return `<div class="thumb thumb-short"><img src="https://i.ytimg.com/vi/${id}/oar2.jpg" alt="" loading="lazy"
-        onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${id}/hqdefault.jpg'"><span class="play">${PLAY}</span></div>`;
+      return `<div class="thumb thumb-short"><img src="https://i.ytimg.com/vi/${id}/oar2.jpg" alt="" loading="lazy" width="720" height="1280"
+        data-fallback="https://i.ytimg.com/vi/${id}/hqdefault.jpg"><span class="play">${PLAY}</span></div>`;
     }
     const img = v.thumbnail || (v.youtubeId ? `https://i.ytimg.com/vi/${encodeURIComponent(v.youtubeId)}/mqdefault.jpg` : "");
-    return `<div class="thumb">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<span class="ph">no video yet</span>`}
+    return `<div class="thumb">${img ? `<img src="${esc(img)}" alt="" loading="lazy" width="320" height="180">` : `<span class="ph">no video yet</span>`}
       <span class="play">${PLAY}</span></div>`;
   };
   // Shorts titles often end in "| sandwichjerry on #Twitch"; hide that tail on the cards.
@@ -164,14 +174,19 @@
   if (!hasGitHub) $("tab-github").remove();
   // Anime-style label: big title letters (each its own span so they can bounce) + small katakana under it.
   const animeLabel = (en, jp) =>
-    `<span class="al"><span class="al-en">${[...en].map((c, i) => `<span class="ch" style="--i:${i}">${esc(c)}</span>`).join("")}</span><span class="al-jp">${esc(jp)}</span></span>`;
+    `<span class="al"><span class="al-en">${[...en].map((c, i) => `<span class="ch">${esc(c)}</span>`).join("")}</span><span class="al-jp">${esc(jp)}</span></span>`;
   const replay = (el, cls) => {
     el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
     clearTimeout(el["_t" + cls]); el["_t" + cls] = setTimeout(() => el.classList.remove(cls), 1000);
   };
-  $("tab-youtube").innerHTML = ICONS.youtube + animeLabel("YouTube", "ユーチューブ");
-  $("tab-instagram").innerHTML = ICONS.instagram + animeLabel("Instagram", "インスタグラム");
-  if (hasGitHub) $("tab-github").innerHTML = ICONS.github + animeLabel("GitHub", "ギットハブ");
+  // Puts a label in place and numbers its letters (--i) so they can animate one after another.
+  const setLabel = (el, html) => {
+    el.innerHTML = html;
+    el.querySelectorAll(".al-en .ch").forEach((c, i) => c.style.setProperty("--i", i));
+  };
+  setLabel($("tab-youtube"), ICONS.youtube + animeLabel("YouTube", "ユーチューブ"));
+  setLabel($("tab-instagram"), ICONS.instagram + animeLabel("Instagram", "インスタグラム"));
+  if (hasGitHub) setLabel($("tab-github"), ICONS.github + animeLabel("GitHub", "ギットハブ"));
   let currentTab = "youtube";
   const movePill = () => {
     const btn = $("tab-" + currentTab);
@@ -243,7 +258,7 @@
   const REEL = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l11 7-11 7z"/></svg>';
   $("ig-grid").innerHTML = posts.length ? posts.map((p, i) =>
     `<button class="ig-tile" data-ig="${i}" aria-label="${esc((p.type === "reel" ? "Reel" : "Photo") + " from " + fmtDate(p.date))}">
-       <img src="${esc(p.image)}" alt="" loading="lazy">
+       <img src="${esc(p.image)}" alt="" loading="lazy" width="480" height="640">
        ${p.type === "reel" ? `<span class="ig-badge">${REEL}</span>` : ""}
        <span class="ig-date">${fmtDate(p.date)}</span>
      </button>`).join("") : `<p class="empty">No Instagram posts added yet.</p>`;
@@ -418,7 +433,7 @@
   const current = () => root.dataset.theme || "dark";
   const paintToggle = () => {
     const light = current() === "light";
-    toggle.innerHTML = light ? MOON + animeLabel("Dark", "ダーク") : SUN + animeLabel("Light", "ライト");
+    setLabel(toggle, light ? MOON + animeLabel("Dark", "ダーク") : SUN + animeLabel("Light", "ライト"));
     toggle.setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
   };
   const applyTheme = (next) => {

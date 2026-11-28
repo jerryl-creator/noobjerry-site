@@ -54,11 +54,13 @@ jobs:
         if: steps.save.outputs.changed == 'true' || github.event_name != 'schedule'
         run: |
           mkdir _site
-          cp index.html style.css app.js content.js videos.js github.js _site/
-          [ -d images ] && cp -r images _site/ || true
+          cp index.html style.css app.js theme.js content.js videos.js github.js _site/
+          cp -r images fonts _site/
+          # Write the main content into the HTML (for search engines and no-JavaScript visitors).
+          python3 scripts/prerender.py _site
           # Stamp file links with this version so browsers load fresh copies after every publish.
           v="${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
-          sed -i -E "s/(href|src)=\"(style\.css|app\.js|content\.js|videos\.js|github\.js)\"/\1=\"\2?v=$v\"/g" _site/index.html
+          sed -i -E "s/(href|src)=\"(style\.css|app\.js|theme\.js|content\.js|videos\.js|github\.js)\"/\1=\"\2?v=$v\"/g" _site/index.html
           grep -E "\?v=" _site/index.html
           # Site map for Google, dated to this publish.
           printf '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://jerryl-creator.github.io/noobjerry-site/</loc>\n    <lastmod>%s</lastmod>\n  </url>\n</urlset>\n' "$(date -u +%Y-%m-%d)" > _site/sitemap.xml

@@ -65,3 +65,13 @@ To pull new uploads into your local copy, run `python3 scripts/update_videos.py`
 
 ## Change colors
 At the top of `style.css`: the first block is the dark theme, the `[data-theme="light"]` block is the light theme.
+
+## Under the hood (for later)
+- **Fonts** live in `fonts/` (trimmed to the characters the site uses; free OFL license). No Google Fonts request.
+- **Security policy:** `index.html` has a `Content-Security-Policy` line listing every outside service the page
+  may use (YouTube thumbnails and player, Instagram embeds, GoatCounter, decapi.me for the Twitch LIVE badge).
+  If you add a new outside service and it doesn't load, it needs adding there.
+- **Pre-render:** on every publish, `scripts/prerender.py` writes your name, bio, links, setup and latest videos
+  straight into the HTML, so search engines and visitors without JavaScript see them too.
+- **Theme:** first-time visitors get light or dark to match their device; the Light/Dark button overrides it.
+
