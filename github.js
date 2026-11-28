@@ -299,14 +299,6 @@ window.GITHUB_DATA = {
       "title": "Add Twitch link",
       "sha": "bea6fd2",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/bea6fd297e41e8bd3cd7347e630c667292b91083"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:51:25",
-      "title": "Add link preview card, site icon and My Setup section",
-      "sha": "e7e1214",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/e7e1214281ce0d7db763444e89a8e43d17d03ab5"
     }
   ]
 };
