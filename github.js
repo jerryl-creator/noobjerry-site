@@ -291,14 +291,6 @@ window.GITHUB_DATA = {
       "title": "Add video search, Shorts filter and optional GoatCounter stats",
       "sha": "0bae60f",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/0bae60f1c5f6a538d34426fa4ad44ae5a0ab9961"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:52:43",
-      "title": "Add Twitch link",
-      "sha": "bea6fd2",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/bea6fd297e41e8bd3cd7347e630c667292b91083"
     }
   ]
 };
