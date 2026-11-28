@@ -40,6 +40,14 @@ window.GITHUB_DATA = {
     {
       "kind": "commit",
       "repo": "noobjerry-site",
+      "date": "2026-11-28T05:40:14",
+      "title": "GitHub tab: list this website's repo after real projects",
+      "sha": "1acb2e5",
+      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/1acb2e592c20cb6a5d490c22f6ba1dbc4f07439e"
+    },
+    {
+      "kind": "commit",
+      "repo": "noobjerry-site",
       "date": "2026-11-28T05:39:16",
       "title": "Add GitHub tab with projects and changelog",
       "sha": "25a8fa0",
@@ -307,22 +315,6 @@ window.GITHUB_DATA = {
       "title": "Stop the page scrolling sideways on phones",
       "sha": "9ed3f2d",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/9ed3f2d75d572a0c966c3fbd41ca0b3e05295beb"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:35:54",
-      "title": "Split publish into build and deploy jobs",
-      "sha": "e2fc7e1",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/e2fc7e1922e7cc2e3eef028a0e6e3008292c366a"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:35:17",
-      "title": "Update GitHub Pages actions to current versions",
-      "sha": "5eb1e22",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/5eb1e22498ec125d6909191f321942e2f869d59e"
     }
   ]
 };
