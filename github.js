@@ -283,14 +283,6 @@ window.GITHUB_DATA = {
       "title": "Turn on GoatCounter visitor stats",
       "sha": "ac73d40",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/ac73d405a55f66ba5e2a5a7e6a48749a753336e0"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:58:21",
-      "title": "Add video search, Shorts filter and optional GoatCounter stats",
-      "sha": "0bae60f",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/0bae60f1c5f6a538d34426fa4ad44ae5a0ab9961"
     }
   ]
 };
