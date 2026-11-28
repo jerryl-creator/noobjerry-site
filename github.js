@@ -40,6 +40,14 @@ window.GITHUB_DATA = {
     {
       "kind": "commit",
       "repo": "noobjerry-site",
+      "date": "2026-11-28T06:51:14",
+      "title": "Modern web fixes: self-hosted fonts, CSP, system theme, image sizes, pre-rendered HTML",
+      "sha": "5b07018",
+      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/5b0701872f2b38ab2bba5b0c98273e9df9ccc6b7"
+    },
+    {
+      "kind": "commit",
+      "repo": "noobjerry-site",
       "date": "2026-11-28T05:40:14",
       "title": "GitHub tab: list this website's repo after real projects",
       "sha": "1acb2e5",
@@ -299,22 +307,6 @@ window.GITHUB_DATA = {
       "title": "Add link preview card, site icon and My Setup section",
       "sha": "e7e1214",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/e7e1214281ce0d7db763444e89a8e43d17d03ab5"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:40:15",
-      "title": "Version file links on each publish so phones get updates right away",
-      "sha": "42b1dc2",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/42b1dc2fea4df07deaa6ace5f98b11d211733bcd"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:39:20",
-      "title": "Stop the page scrolling sideways on phones",
-      "sha": "9ed3f2d",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/9ed3f2d75d572a0c966c3fbd41ca0b3e05295beb"
     }
   ]
 };
