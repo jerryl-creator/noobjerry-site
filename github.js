@@ -5,6 +5,17 @@ window.GITHUB_DATA = {
   "url": "https://github.com/jerryl-creator",
   "projects": [
     {
+      "name": "noobjerry-site",
+      "url": "https://github.com/jerryl-creator/noobjerry-site",
+      "description": "NoobJerry - videos and links",
+      "language": "JavaScript",
+      "stars": 0,
+      "topics": [],
+      "updated": "2026-11-28",
+      "homepage": "",
+      "release": null
+    },
+    {
       "name": "nyanspect",
       "url": "https://github.com/jerryl-creator/nyanspect",
       "description": "Anime-styled hardware tester for keyboards (full layout + numpad), dead pixels and speakers. Rust + egui, Windows & Linux.",
@@ -23,20 +34,17 @@ window.GITHUB_DATA = {
         "url": "https://github.com/jerryl-creator/nyanspect/releases/tag/v2.0.2",
         "date": "2026-11-28"
       }
-    },
-    {
-      "name": "noobjerry-site",
-      "url": "https://github.com/jerryl-creator/noobjerry-site",
-      "description": "NoobJerry - videos and links",
-      "language": "JavaScript",
-      "stars": 0,
-      "topics": [],
-      "updated": "2026-11-26",
-      "homepage": "",
-      "release": null
     }
   ],
   "changelog": [
+    {
+      "kind": "commit",
+      "repo": "noobjerry-site",
+      "date": "2026-11-28T05:39:16",
+      "title": "Add GitHub tab with projects and changelog",
+      "sha": "25a8fa0",
+      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/25a8fa0c5af714729a0e1c0e436ab14c5a2aea37"
+    },
     {
       "kind": "commit",
       "repo": "nyanspect",
@@ -315,14 +323,6 @@ window.GITHUB_DATA = {
       "title": "Update GitHub Pages actions to current versions",
       "sha": "5eb1e22",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/5eb1e22498ec125d6909191f321942e2f869d59e"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T09:34:35",
-      "title": "NoobJerry website: videos, Instagram tab and auto-updating YouTube list",
-      "sha": "8f91b50",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/8f91b50ebd4146a5724d97b87a2deae23d80841b"
     }
   ]
 };
