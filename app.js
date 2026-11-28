@@ -256,7 +256,9 @@
     $("gh-head").innerHTML = `${ICONS.github}<div><strong>@${esc(GH.user)}</strong>
         <span>Projects I build and what changed lately</span></div>
         <a class="btn" href="${esc(GH.url)}" target="_blank" rel="noopener" data-gh="profile">Follow ↗</a>`;
-    $("gh-projects").innerHTML = GH.projects.map((p) => `
+    // Your own projects first; this website's repo (updated by the robot all the time) goes last.
+    const projects = GH.projects.slice().sort((a, b) => (a.name === thisSite) - (b.name === thisSite));
+    $("gh-projects").innerHTML = projects.map((p) => `
       <article class="gh-project">
         <div class="gh-project-top">${REPO}<a href="${esc(p.url)}" target="_blank" rel="noopener" data-gh="${esc(p.name)}"><strong>${esc(p.name)}</strong></a>
           ${p.name === thisSite ? `<span class="gh-badge">this website</span>` : ""}
