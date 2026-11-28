@@ -275,14 +275,6 @@ window.GITHUB_DATA = {
       "title": "Feature the newest upload automatically; add sitemap and search-engine profile data",
       "sha": "169666f",
       "url": "https://github.com/jerryl-creator/noobjerry-site/commit/169666f3f2e647ae80d4dbcf4f4461867882e8d6"
-    },
-    {
-      "kind": "commit",
-      "repo": "noobjerry-site",
-      "date": "2026-11-24T10:05:35",
-      "title": "Turn on GoatCounter visitor stats",
-      "sha": "ac73d40",
-      "url": "https://github.com/jerryl-creator/noobjerry-site/commit/ac73d405a55f66ba5e2a5a7e6a48749a753336e0"
     }
   ]
 };
